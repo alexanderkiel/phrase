@@ -8,10 +8,6 @@
          [clojure.string :as str]
          [clojure.walk :as walk]))
 
-(defn regex? [x]
-  #?(:clj (instance? java.util.regex.Pattern x)
-     :cljs (regexp? x)))
-
 (defn- normalize-pred
   "Retains symbols in pred. Replaces things like numbers with symbols.
 
@@ -21,7 +17,7 @@
         mappings (atom {})]
     {::normalized-pred
      (walk/postwalk
-       #(if (or (number? %) (string? %) (regex? %))
+       #(if-not (or (symbol? %) (sequential? %))
           (let [sym (symbol (str "x" (swap! counter inc)))]
             (swap! mappings assoc (keyword (name sym)) %)
             sym)
@@ -126,7 +122,7 @@
         mappings (atom (zipmap bindings (repeat nil)))]
     {:pred
      (walk/postwalk
-       #(if (or (some #{%} bindings) (= '_ %) (number? %) (string? %) (regex? %))
+       #(if (or (some #{%} bindings) (= '_ %) (not (or (symbol? %) (sequential? %))))
           (let [sym (symbol (str "x" (swap! counter inc)))]
             (when (some #{%} bindings)
               (swap! mappings assoc % (keyword (name sym))))
@@ -179,3 +175,10 @@
   "Removes the default phraser."
   []
   (remove-method phrase* []))
+
+(comment
+  (methods phrase*)
+  (remove-all-methods phrase*)
+  (sequential? [:a])
+  (sequential? (list :a))
+  )
