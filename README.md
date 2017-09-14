@@ -6,6 +6,8 @@ Clojure(Script) library for phrasing [spec][2] problems. Phrasing refers to conv
 
 This library can be used in various scenarios but it's primary focus is on form validation. I talked about [Form Validation with Clojure Spec][1] in Feb 2017 and Phrase is the library based on this talk.
 
+The main idea of this library is to dispatch on spec problems and let you generate human readable messages for individual and whole classes of problems. Phrase doesn't try to generically generate messages for all problems like [Expound][3] does. The target audience for generated messages are end-users of an application not developers.
+
 ## Install
 
 To install, just add the following to your project dependencies:
@@ -132,6 +134,10 @@ Besides dispatching on the predicate, we can additionally dispatch on `:via` of 
 
 Without the additional phraser with the `:via` specifier, the message `"Please enter a positive integer."` would be returned. By defining a phraser with a `:via` specifier of `[::year]`, the more specific message `"The year has to be a positive integer."` is returned.
 
+## Related Work
+
+* [Expound][3] - aims to generate more readable messages as `s/explain`. The audience are developers not end-users.
+
 ## License
 
 Copyright © 2017 Alexander Kiel
@@ -141,3 +147,4 @@ your option) any later version.
 
 [1]: <https://www.slideshare.net/alexanderkiel/form-validation-with-clojure-spec>
 [2]: <https://clojure.org/about/spec>
+[3]: <https://github.com/bhb/expound>
