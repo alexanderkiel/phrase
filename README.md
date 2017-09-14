@@ -1,5 +1,7 @@
 # Phrase
 
+[![Build Status](https://travis-ci.org/alexanderkiel/phrase.svg?branch=master)](https://travis-ci.org/alexanderkiel/phrase)
+
 Clojure(Script) library for phrasing [spec][2] problems. Phrasing refers to converting to human readable messages.
 
 This library can be used in various scenarios but it's primary focus is on form validation. I talked about [Form Validation with Clojure Spec][1] in Feb 2017 and Phrase is the library based on this talk.
