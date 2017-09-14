@@ -89,6 +89,18 @@
   (is (= "Invalid identifier! Needs to match /[a-z][a-z0-9]*/."
          (phrase-first {} ::identifier "0"))))
 
+(s/def ::barcode
+  #(re-matches #"[0-9]+" %))
+
+(defphraser #(re-matches #"foo" %)
+  {:via [::barcode]}
+  [_ _]
+  "Invalid barcode.")
+
+(deftest barcode-test
+  (testing "Keeping concrete values is possible, but the value itself doesn't matter."
+    (is (= "Invalid barcode." (phrase-first {} ::barcode "a")))))
+
 (def via-test? int?)
 
 (s/def ::via-test
