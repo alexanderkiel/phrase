@@ -77,3 +77,14 @@
   (is (= "The year has to be a positive integer."
          (phrase-first {} ::year "1942"))))
 
+(s/def ::identifier
+  #(re-matches #"[a-z][a-z0-9]*" %))
+
+(defphraser #(re-matches re %)
+  [_ _ re]
+  (format "Invalid identifier! Needs to match %s."
+          #?(:clj (str "/" re "/") :cljs re)))
+
+(deftest identifier-test
+  (is (= "Invalid identifier! Needs to match /[a-z][a-z0-9]*/."
+         (phrase-first {} ::identifier "0"))))
