@@ -29,7 +29,7 @@
        pred)
      ::mappings @mappings}))
 
-(defn- dispatch [_ {:keys [::normalized-pred via]}]
+(defn- dispatch [_ {:keys [::normalized-pred ::via]}]
   (cond-> []
     normalized-pred (conj normalized-pred)
     (seq via) (conj via)))
@@ -51,13 +51,13 @@
 (defmethod phrase* :default
   [context problem]
   (cond
-    (seq (:via problem))
-    (phrase* context (dissoc problem :via))
+    (seq (::via problem))
+    (phrase* context (dissoc problem ::via))
     (::normalized-pred problem)
     (phrase* context (dissoc problem ::normalized-pred))))
 
-(defn- phrase-problem [{:keys [pred] :as problem}]
-  (into problem (normalize-pred pred)))
+(defn- phrase-problem [{:keys [pred via] :as problem}]
+  (merge problem (normalize-pred pred) {::via via}))
 
 (defn phrase [context problem]
   (phrase* context (phrase-problem problem)))
@@ -171,7 +171,7 @@
             dispatch-val (cond-> [pred] (seq via) (conj via))]
         `(defmethod phrase* '~dispatch-val [~context-binding-form problem#]
            (let [~problem-binding-form (dissoc problem# ::normalized-pred
-                                               ::mappings)
+                                               ::mappings ::via)
                  ~{mappings ::mappings} problem#]
              ~@body))))))
 

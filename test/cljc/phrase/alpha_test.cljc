@@ -88,3 +88,16 @@
 (deftest identifier-test
   (is (= "Invalid identifier! Needs to match /[a-z][a-z0-9]*/."
          (phrase-first {} ::identifier "0"))))
+
+(def via-test? int?)
+
+(s/def ::via-test
+  via-test?)
+
+(defphraser via-test?
+  [_ {:keys [via]}]
+  via)
+
+(deftest via-test
+  (testing "via is kept"
+    (is (= [::via-test] (phrase-first {} ::via-test "")))))
