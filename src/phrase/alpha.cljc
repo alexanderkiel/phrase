@@ -126,7 +126,7 @@
         mappings (atom (zipmap bindings (repeat nil)))]
     {:pred
      (walk/postwalk
-       #(if (or (some #{%} bindings) (number? %) (string? %) (regex? %))
+       #(if (or (some #{%} bindings) (= '_ %) (number? %) (string? %) (regex? %))
           (let [sym (symbol (str "x" (swap! counter inc)))]
             (when (some #{%} bindings)
               (swap! mappings assoc % (keyword (name sym))))

@@ -101,6 +101,18 @@
   (testing "Keeping concrete values is possible, but the value itself doesn't matter."
     (is (= "Invalid barcode." (phrase-first {} ::barcode "a")))))
 
+(s/def ::underscore
+  #(= "_" %))
+
+(defphraser #(= _ %)
+  {:via [::underscore]}
+  [_ _]
+  "Invalid underscore.")
+
+(deftest underscore-test
+  (testing "Keeping concrete values is possible, but the value itself doesn't matter."
+    (is (= "Invalid underscore." (phrase-first {} ::underscore "a")))))
+
 (def via-test? int?)
 
 (s/def ::via-test
