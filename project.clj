@@ -12,7 +12,7 @@
 
   :profiles
   {:dev
-   {:dependencies [[org.clojure/clojure "1.9.0-alpha20"]
+   {:dependencies [[org.clojure/clojure "1.9.0-alpha19"]
                    [org.clojure/clojurescript "1.9.908"]]}}
 
   :source-paths ["src"]
