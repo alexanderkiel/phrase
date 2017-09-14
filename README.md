@@ -64,7 +64,7 @@ returns the desired message:
 
 ### The defphraser macro
 
-In it's minimal form, the defphraser macro takes a predicate and a argument vector of two arguments, a context and the problem:
+In it's minimal form, the defphraser macro takes a predicate and an argument vector of two arguments, a context and the problem:
 
 ```clojure
 (defphraser int?
@@ -72,7 +72,7 @@ In it's minimal form, the defphraser macro takes a predicate and a argument vect
   "Please enter an integer.")
 ``` 
 
-The context is the same as given to `phrase-first` it can be used to generate a I18N message. The problem is the spec problem which can be used to retrieve the invalid value for example.
+The context is the same as given to `phrase-first` it can be used to generate I18N messages. The problem is the spec problem which can be used to retrieve the invalid value for example.
 
 In addition to the minimal form, the argument vector can contain one or more trailing arguments which can be used in the predicate to capture concrete values. In the example before, we captured `min-length`:
 
