@@ -8,7 +8,11 @@ This library can be used in various scenarios but it's primary focus is on form 
 
 ## Install
 
-TODO
+To install, just add the following to your project dependencies:
+
+```clojure
+[phrase "0.1-alpha1"]
+```
 
 ## Usage
 
