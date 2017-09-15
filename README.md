@@ -193,6 +193,10 @@ In this example, I require a password to have the right length and contain at le
 
 The main function to phrase problems is `phrase`. It takes the problem directly. There is a helper function called `phrase-first` which does the whole thing. It calls `s/explain-data` on the value using the supplied spec and phrases the first problem, if there is any. However, you have to use `phrase` directly if you like to phrase more than one problem. The library doesn't contain a `phrase-all` function because it doesn't know how to concatenate messages. 
 
+### Kinds of Messages
+
+Phrase doesn't assume anything about messages. Messages can be strings or other things like [hiccup][4]-style data structures which can be converted into HTML later. Everything is supported. Just return it from the `defphraser` macro. Phrase does nothing with it.
+
 ## Related Work
 
 * [Expound][3] - aims to generate more readable messages as `s/explain`. The audience are developers not end-users.
@@ -207,3 +211,4 @@ your option) any later version.
 [1]: <https://www.slideshare.net/alexanderkiel/form-validation-with-clojure-spec>
 [2]: <https://clojure.org/about/spec>
 [3]: <https://github.com/bhb/expound>
+[4]: <https://github.com/weavejester/hiccup>
