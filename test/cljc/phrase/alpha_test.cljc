@@ -125,3 +125,42 @@
 (deftest via-test
   (testing "via is kept"
     (is (= [::via-test] (phrase-first {} ::via-test "")))))
+
+(s/def ::complex-password
+  (s/and #(<= 8 (count %) 256)
+         #(re-find #"\d" %)
+         #(re-find #"[a-z]" %)
+         #(re-find #"[A-Z]" %)))
+
+(defphraser #(<= lo (count %) up)
+  {:via [::complex-password]}
+  [_ {:keys [val]} lo up]
+  (format "Length has to be between %s and %s but was %s." lo up (count val)))
+
+(defphraser #(re-find re %)
+  [_ _ re]
+  (format "Has to contain at least one %s."
+          (case (str/replace (str re) #"/" "")
+            "\\d" "number"
+            "[a-z]" "lowercase letter"
+            "[A-Z]" "uppercase letter")))
+
+(deftest complex-password-test
+  (testing "length"
+    (is (= "Length has to be between 8 and 256 but was 1."
+           (phrase-first {} ::complex-password "a"))))
+
+  (testing "number"
+    (is (= "Has to contain at least one number."
+           (phrase-first {} ::complex-password "aaaaaaaa"))))
+
+  (testing "lowercase"
+    (is (= "Has to contain at least one lowercase letter."
+           (phrase-first {} ::complex-password "AAAAAAA1"))))
+
+  (testing "uppercase"
+    (is (= "Has to contain at least one uppercase letter."
+           (phrase-first {} ::complex-password "aaaaaaa1"))))
+
+  (testing "valid"
+    (is (s/valid? ::complex-password "aaaaaaA1"))))

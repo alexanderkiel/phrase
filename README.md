@@ -144,6 +144,51 @@ It's certainly useful to have a default phraser which is used whenever no matchi
   "Invalid value!")
 ```
 
+### More Complex Example
+
+If you like to validate more than one thing, for example correct length and various regexes, I suggest that you build a spec using `s/and` as opposed to building a big, complex predicate which would be difficult to match.
+
+In this example, I require a password to have the right length and contain at least one number, one lowercase letter and one uppercase letter. For each requirement, I have a separate predicate.
+
+```clojure
+(s/def ::password
+  (s/and #(<= 8 (count %) 256)
+         #(re-find #"\d" %)
+         #(re-find #"[a-z]" %)
+         #(re-find #"[A-Z]" %)))
+
+(defphraser #(<= lo (count %) up)
+  [_ {:keys [val]} lo up]
+  (format "Length has to be between %s and %s but was %s." 
+          lo up (count val)))
+
+;; Because Phrase replaces every concrete value like the regex, we can't match
+;; on it. Instead, we define only one phraser for `re-find` and use a case to 
+;; build the message.
+(defphraser #(re-find re %)
+  [_ _ re]
+  (format "Has to contain at least one %s."
+          (case (str/replace (str re) #"/" "")
+            "\\d" "number"
+            "[a-z]" "lowercase letter"
+            "[A-Z]" "uppercase letter")))
+
+(phrase-first {} ::password "a")
+;;=> "Length has to be between 8 and 256 but was 1."
+
+(phrase-first {} ::password "aaaaaaaa")
+;;=> "Has to contain at least one number."
+
+(phrase-first {} ::password "AAAAAAA1")
+;;=> "Has to contain at least one lowercase letter."
+
+(phrase-first {} ::password "aaaaaaa1")
+;;=> "Has to contain at least one uppercase letter."
+
+(s/valid? ::password "aaaaaaA1")
+;;=> true
+```
+
 ## Related Work
 
 * [Expound][3] - aims to generate more readable messages as `s/explain`. The audience are developers not end-users.
