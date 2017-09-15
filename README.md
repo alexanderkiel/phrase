@@ -189,6 +189,10 @@ In this example, I require a password to have the right length and contain at le
 ;;=> true
 ```
 
+### Phrasing Problems
+
+The main function to phrase problems is `phrase`. It takes the problem directly. There is a helper function called `phrase-first` which does the whole thing. It calls `s/explain-data` on the value using the supplied spec and phrases the first problem, if there is any. However, you have to use `phrase` directly if you like to phrase more than one problem. The library doesn't contain a `phrase-all` function because it doesn't know how to concatenate messages. 
+
 ## Related Work
 
 * [Expound][3] - aims to generate more readable messages as `s/explain`. The audience are developers not end-users.

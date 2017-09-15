@@ -1,4 +1,5 @@
 (ns phrase.alpha
+  "Public are the functions `phrase`, `phrase-first` and the macro `defphraser`."
   (:require
     #?@(:clj
         [[clojure.core.specs.alpha]
@@ -11,7 +12,7 @@
 (defn- normalize-pred
   "Retains symbols in pred. Replaces things like numbers with symbols.
 
-  Example: (<= (count %) 10) gets (<= (count %) x0)"
+  Example: #(<= (count %) 10) gets #(<= (count %) x0)"
   [pred]
   (let [counter (atom -1)
         mappings (atom {})]
@@ -55,12 +56,20 @@
 (defn- phrase-problem [{:keys [pred via] :as problem}]
   (merge problem (normalize-pred pred) {::via via}))
 
-(defn phrase [context problem]
+(defn phrase
+  "Takes a context and a clojure.spec problem and dispatches to a phraser.
+
+  Returns the phrasers return value or nil if none was found and no default
+  phraser is defined. Dispatches based on pred and via of the problem. See
+  phraser macro for details."
+  [context problem]
   (phrase* context (phrase-problem problem)))
 
 (defn phrase-first
-  "Given a spec a value x, phrases the first problem using context if any.
-  Returns nil if x is valid."
+  "Given a spec and a value x, phrases the first problem using context if any.
+
+  Returns nil if x is valid or no phraser was found. See phrase for details.
+  Use phrase directly if you want to phrase more than one problem."
   [context spec x]
   (some->> (s/explain-data spec x)
            ::s/problems
@@ -105,7 +114,7 @@
    (def ^:private analyzer-resolve (delay (dynaload 'cljs.analyzer.api/resolve))))
 
 #?(:clj
-   (defn resolve' [env sym]
+   (defn- resolve' [env sym]
      (if (:ns env)
        (@analyzer-resolve env sym)
        (resolve env sym))))
