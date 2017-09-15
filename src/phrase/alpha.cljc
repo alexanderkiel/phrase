@@ -175,10 +175,3 @@
   "Removes the default phraser."
   []
   (remove-method phrase* []))
-
-(comment
-  (methods phrase*)
-  (remove-all-methods phrase*)
-  (sequential? [:a])
-  (sequential? (list :a))
-  )
