@@ -134,6 +134,16 @@ Besides dispatching on the predicate, we can additionally dispatch on `:via` of 
 
 Without the additional phraser with the `:via` specifier, the message `"Please enter a positive integer."` would be returned. By defining a phraser with a `:via` specifier of `[::year]`, the more specific message `"The year has to be a positive integer."` is returned.
 
+### Default Phraser
+
+It's certainly useful to have a default phraser which is used whenever no matching phraser is found. You can define a default phraser using the keyword `:default` instead of a predicate.
+
+```clojure
+(defphraser :default
+  [_ _]
+  "Invalid value!")
+```
+
 ## Related Work
 
 * [Expound][3] - aims to generate more readable messages as `s/explain`. The audience are developers not end-users.
