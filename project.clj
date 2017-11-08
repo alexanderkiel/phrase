@@ -12,8 +12,8 @@
 
   :profiles
   {:dev
-   {:dependencies [[org.clojure/clojure "1.9.0-alpha19"]
-                   [org.clojure/clojurescript "1.9.908"]]}}
+   {:dependencies [[org.clojure/clojure "1.9.0-RC1"]
+                   [org.clojure/clojurescript "1.9.946"]]}}
 
   :source-paths ["src"]
   :test-paths ["test/cljc"]
