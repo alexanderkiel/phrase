@@ -1,4 +1,4 @@
-(defproject phrase "0.2-SNAPSHOT"
+(defproject phrase "0.1-alpha2"
   :description "Clojure(Script) library for phrasing spec problems."
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
