@@ -49,7 +49,7 @@
   [context problem]
   (cond
     (seq (::via problem))
-    (phrase* context (dissoc problem ::via))
+    (phrase* context (update problem ::via rest))
     (::normalized-pred problem)
     (phrase* context (dissoc problem ::normalized-pred))))
 

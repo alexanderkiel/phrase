@@ -64,18 +64,30 @@
 (s/def ::year
   pos-int?)
 
-(defphraser pos-int?
-  {:via [::year]}
-  [_ _]
-  "The year has to be a positive integer.")
+(s/def ::date
+  (s/keys :req [::year]))
 
 (defphraser pos-int?
   [_ _]
   "Please enter a positive integer.")
 
-(deftest year-test
-  (is (= "The year has to be a positive integer."
-         (phrase-first {} ::year "1942"))))
+(defphraser pos-int?
+  {:via [::year]}
+  [_ _]
+  "The year has to be a positive integer.")
+
+(deftest via-dispatching-test
+  (testing "The default is used for pos-int?"
+    (is (= "Please enter a positive integer."
+           (phrase-first {} (s/spec pos-int?) -1))))
+
+  (testing "Via ::year is used."
+    (is (= "The year has to be a positive integer."
+           (phrase-first {} ::year -1))))
+
+  (testing "Via ::year is also used inside ::date."
+    (is (= "The year has to be a positive integer."
+           (phrase-first {} ::date {::year -1})))))
 
 (s/def ::identifier
   #(re-matches #"[a-z][a-z0-9]*" %))
