@@ -1,6 +1,7 @@
 # Phrase
 
 [![Build Status](https://travis-ci.org/alexanderkiel/phrase.svg?branch=master)](https://travis-ci.org/alexanderkiel/phrase)
+[![Dependencies Status](https://versions.deps.co/alexanderkiel/phrase/status.svg)](https://versions.deps.co/alexanderkiel/phrase)
 
 Clojure(Script) library for phrasing [spec][2] problems. Phrasing refers to converting to human readable messages.
 
