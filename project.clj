@@ -8,7 +8,7 @@
   :pedantic? :abort
 
   :plugins [[lein-cljsbuild "1.1.7"]
-            [lein-doo "0.1.7"]]
+            [lein-doo "0.1.8"]]
 
   :profiles
   {:dev
