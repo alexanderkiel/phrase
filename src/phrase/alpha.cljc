@@ -6,7 +6,6 @@
          [clojure.spec.alpha :as s]]
         :cljs
         [[cljs.spec.alpha :as s]])
-         [clojure.string :as str]
          [clojure.walk :as walk]))
 
 (defn- normalize-pred
