@@ -172,11 +172,15 @@
       (let [{:keys [pred mappings]} (replace-syms (res &env pred)
                                                   capture-binding-forms)
             {:keys [via]} specifiers
-            dispatch-val (cond-> [pred] (seq via) (conj via))]
-        `(defmethod phrase* '~dispatch-val [~context-binding-form problem#]
-           (let [~problem-binding-form (dissoc problem# ::normalized-pred
-                                               ::mappings ::via)
-                 ~{mappings ::mappings} problem#]
+            dispatch-val (cond-> [pred] (seq via) (conj via))
+            problem (gensym "problem")
+            binding-forms
+            (cond-> [problem-binding-form `(dissoc ~problem ::normalized-pred
+                                                   ::mappings ::via)]
+              (not-empty mappings)
+              (conj {mappings ::mappings} problem))]
+        `(defmethod phrase* '~dispatch-val [~context-binding-form ~problem]
+           (let ~binding-forms
              ~@body))))))
 
 (defn remove-default!

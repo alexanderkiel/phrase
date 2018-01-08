@@ -26,7 +26,7 @@
   #(<= 8 (count %)))
 
 (defphraser #(<= min-length (count %))
-  [_ {:keys [val]} min-length]
+  [_ _ min-length]
   (format "Please use at least %s chars." min-length))
 
 (deftest password-test
