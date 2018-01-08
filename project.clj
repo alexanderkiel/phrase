@@ -33,4 +33,5 @@
   :aliases
   {"cljs-nashorn-tests" ["doo" "nashorn" "test" "once"]
    "cljs-phantom-tests" ["doo" "phantom" "test" "once"]
-   "all-tests" ["do" "test," "cljs-nashorn-tests," "cljs-phantom-tests"]})
+   "all-tests" ["do" "test," "cljs-nashorn-tests," "cljs-phantom-tests"]
+   "lint" ["eastwood" "{:linters [:all] :exclude-linters [:keyword-typos]}"]})
