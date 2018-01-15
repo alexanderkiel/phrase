@@ -1,16 +1,13 @@
 (ns phrase.alpha-test
   (:require
-    #?@(:clj
-        [[clojure.spec.alpha :as s]
-         [clojure.test :refer :all]
-         [phrase.alpha :refer [defphraser phrase-first remove-default!]]]
-        :cljs
-        [[cljs.spec.alpha :as s]
-         [cljs.test :refer-macros [deftest are is testing]]
-         [goog.string :as gstr]
-         [goog.string.format]
-         [phrase.alpha :refer [phrase-first remove-default!] :refer-macros [defphraser]]])
-         [clojure.string :as str]))
+    #?@(:cljs
+        [[goog.string :as gstr]
+         [goog.string.format]])
+
+    [clojure.spec.alpha :as s]
+    [clojure.string :as str]
+    [clojure.test :refer [deftest are is testing]]
+    [phrase.alpha :refer [defphraser phrase-first remove-default!]]))
 
 #?(:cljs (def format gstr/format))
 

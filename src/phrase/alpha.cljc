@@ -2,13 +2,15 @@
   "Public are the functions `phrase`, `phrase-first` and the macro `defphraser`."
   (:require
     #?@(:clj
-        [[clojure.core.specs.alpha]
-         [clojure.spec.alpha :as s]]
+        [[clojure.core.specs.alpha]]
         :cljs
         [[cljs.analyzer.api]
-         [cljs.spec.alpha :as s]
          [clojure.string :as str]])
-         [clojure.walk :as walk]))
+
+         [clojure.spec.alpha :as s]
+         [clojure.walk :as walk])
+  #?(:cljs
+     (:require-macros [phrase.alpha])))
 
 (defn- normalize-pred
   "Retains symbols in pred. Replaces things like numbers with symbols.
@@ -126,7 +128,7 @@
 (defn- res [env form]
   (cond
     (keyword? form) form
-    (symbol? form) #?(:clj (or (->> form (resolve' env) ->sym) form)
+    (symbol? form) #?(:clj  (or (->> form (resolve' env) ->sym) form)
                       :cljs (let [resolved (or (->> form (resolve' env) ->sym) form)
                                   ns-name (namespace resolved)]
                               (symbol
