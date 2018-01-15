@@ -8,7 +8,8 @@
   :pedantic? :abort
 
   :plugins [[lein-cljsbuild "1.1.7"]
-            [lein-doo "0.1.8"]]
+            [lein-doo "0.1.8"]
+            [lein-tach "0.4.0"]]
 
   :profiles
   {:dev
@@ -24,14 +25,18 @@
     {:source-paths ["src" "test/cljc" "test/cljs"]
      :compiler
      {:output-to "out/testable.js"
-      :main phrase.runner
+      :main phrase.doo-runner
       :optimizations :simple
       :process-shim false}}}}
+
+  :tach
+  {:test-runner-ns phrase.tach-runner}
 
   :clean-targets ["target" "out"]
 
   :aliases
   {"cljs-nashorn-tests" ["doo" "nashorn" "test" "once"]
    "cljs-phantom-tests" ["doo" "phantom" "test" "once"]
-   "all-tests" ["do" "test," "cljs-nashorn-tests," "cljs-phantom-tests"]
+   "cljs-planck-tests" ["tach" "planck" "test"]
+   "all-tests" ["do" "test," "cljs-nashorn-tests," "cljs-phantom-tests," "cljs-planck-tests"]
    "lint" ["eastwood" "{:linters [:all] :exclude-linters [:keyword-typos]}"]})
