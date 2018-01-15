@@ -24,7 +24,6 @@ Assuming you like to validate passwords which have to be strings with at least 8
 
 ```clojure
 (require '[clojure.spec.alpha :as s])
-(require '[clojure.string :as str])
 
 (s/def ::password
   #(<= 8 (count %)))
@@ -50,12 +49,26 @@ Phrase helps you to convert such problem maps into messages for your end-users w
 
 The main discriminator in the problem map is the predicate. Phrase provides a way to dispatch on that predicate in a quite advanced way. It allows to substitute concrete values with symbols which bind to that values. In our case we would like to dispatch on all predicates which require a minimum string length regardless of the concrete boundary. In Phrase you can define a phraser:
 
+Clojure REPL:
+
 ```clojure
 (require '[phrase.alpha :refer [defphraser]])
 
 (defphraser #(<= min-length (count %))
   [_ _ min-length]
   (format "Please use at least %s chars." min-length))
+``` 
+
+ClojureScript REPL:
+
+```clojure
+(require '[phrase.alpha :refer-macros [defphraser]])
+(require '[goog.string :as gstr])
+(require '[goog.string.format])
+
+(defphraser #(<= min-length (count %))
+  [_ _ min-length]
+  (gstr/format "Please use at least %s chars." min-length))
 ``` 
 
 the following code:
@@ -203,6 +216,50 @@ Phrase doesn't assume anything about messages. Messages can be strings or other 
 
 * [Expound][3] - aims to generate more readable messages as `s/explain`. The audience are developers not end-users.
 
+## Complete Example in ClojureScript using Planck
+
+First install [Planck][5] if you haven't already. Planck can use libraries which are already downloaded into your local Maven repository. A quick way to download the Phrase Jar is to use boot:
+
+```sh
+boot -d phrase:0.3-alpha1
+```
+
+After that, start Planck with Phrase as dependency:
+
+```sh
+planck -D phrase:0.3-alpha1
+```
+
+After that, you can paste the following into the Planck REPL:
+
+```clojure
+(require '[clojure.spec.alpha :as s])
+(require '[phrase.alpha :refer [phrase-first] :refer-macros [defphraser]])
+(require '[goog.string :as gstr])
+(require '[goog.string.format])
+
+(s/def ::password
+  #(<= 8 (count %)))
+  
+(defphraser #(<= min-length (count %))
+  [_ _ min-length]
+  (gstr/format "Please use at least %s chars." min-length))
+  
+(phrase-first {} ::password "1234")
+```
+
+The output should be:
+
+```clojure
+nil
+nil
+nil
+nil
+:cljs.user/password
+#object[cljs.core.MultiFn]
+"Please use at least 8 chars."
+```
+
 ## License
 
 Copyright © 2017 Alexander Kiel
@@ -214,3 +271,4 @@ your option) any later version.
 [2]: <https://clojure.org/about/spec>
 [3]: <https://github.com/bhb/expound>
 [4]: <https://github.com/weavejester/hiccup>
+[5]: <http://planck-repl.org>
