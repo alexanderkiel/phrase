@@ -15,7 +15,7 @@ The main idea of this library is to dispatch on spec problems and let you genera
 To install, just add the following to your project dependencies:
 
 ```clojure
-[phrase "0.2-alpha1"]
+[phrase "0.3-alpha1"]
 ```
 
 ## Usage

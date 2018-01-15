@@ -1,6 +1,6 @@
-(defproject phrase "0.3-SNAPSHOT"
+(defproject phrase "0.3-alpha1"
   :description "Clojure(Script) library for phrasing spec problems."
-  :url "http://example.com/FIXME"
+  :url "https://github.com/alexanderkiel/phrase"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
