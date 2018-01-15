@@ -15,7 +15,7 @@ The main idea of this library is to dispatch on spec problems and let you genera
 To install, just add the following to your project dependencies:
 
 ```clojure
-[phrase "0.3-alpha1"]
+[phrase "0.3-alpha2"]
 ```
 
 ## Usage
@@ -221,13 +221,13 @@ Phrase doesn't assume anything about messages. Messages can be strings or other 
 First install [Planck][5] if you haven't already. Planck can use libraries which are already downloaded into your local Maven repository. A quick way to download the Phrase Jar is to use boot:
 
 ```sh
-boot -d phrase:0.3-alpha1
+boot -d phrase:0.3-alpha2
 ```
 
 After that, start Planck with Phrase as dependency:
 
 ```sh
-planck -D phrase:0.3-alpha1
+planck -D phrase:0.3-alpha2
 ```
 
 After that, you can paste the following into the Planck REPL:
