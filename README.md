@@ -49,26 +49,12 @@ Phrase helps you to convert such problem maps into messages for your end-users w
 
 The main discriminator in the problem map is the predicate. Phrase provides a way to dispatch on that predicate in a quite advanced way. It allows to substitute concrete values with symbols which bind to that values. In our case we would like to dispatch on all predicates which require a minimum string length regardless of the concrete boundary. In Phrase you can define a phraser:
 
-Clojure REPL:
-
 ```clojure
 (require '[phrase.alpha :refer [defphraser]])
 
 (defphraser #(<= min-length (count %))
   [_ _ min-length]
-  (format "Please use at least %s chars." min-length))
-``` 
-
-ClojureScript REPL:
-
-```clojure
-(require '[phrase.alpha :refer-macros [defphraser]])
-(require '[goog.string :as gstr])
-(require '[goog.string.format])
-
-(defphraser #(<= min-length (count %))
-  [_ _ min-length]
-  (gstr/format "Please use at least %s chars." min-length))
+  (str "Please use at least " min-length " chars."))
 ``` 
 
 the following code:
@@ -102,7 +88,7 @@ In addition to the minimal form, the argument vector can contain one or more tra
 ```clojure
 (defphraser #(<= min-length (count %))
   [_ _ min-length]
-  (format "Please use at least %s chars." min-length))
+  (str "Please use at least " min-length " chars."))
 ``` 
 
 In case the predicated used in a spec is `#(<= 8 (count %))`, `min-length` resolves to 8.
@@ -115,11 +101,10 @@ Combined with the invalid value from the problem, we can build quite advanced me
   
 (defphraser #(<= min-length (count %) max-length)
   [_ {:keys [val]} min-length max-length]
-  (let [args (if (< (count val) min-length)
-               ["less" "minimum" min-length]
-               ["more" "maximum" max-length])]
-    (apply format "You entered %s chars which is %s than the %s length of %s chars."
-           (count val) args)))
+  (let [[a1 a2 a3] (if (< (count val) min-length)
+                     ["less" "minimum" min-length]
+                     ["more" "maximum" max-length])]
+    (str "You entered " (count val) " chars which is " a1 " than the " a2 " length of " a3 " chars.")))
            
 (phrase-first {} ::password "1234")
 ;;=> "You entered 4 chars which is less than the minimum length of 8 chars."
@@ -174,19 +159,19 @@ In this example, I require a password to have the right length and contain at le
 
 (defphraser #(<= lo (count %) up)
   [_ {:keys [val]} lo up]
-  (format "Length has to be between %s and %s but was %s." 
-          lo up (count val)))
+  (str "Length has to be between " lo " and " up " but was " (count val) "."))
 
 ;; Because Phrase replaces every concrete value like the regex, we can't match
 ;; on it. Instead, we define only one phraser for `re-find` and use a case to 
 ;; build the message.
 (defphraser #(re-find re %)
   [_ _ re]
-  (format "Has to contain at least one %s."
-          (case (str/replace (str re) #"/" "")
-            "\\d" "number"
-            "[a-z]" "lowercase letter"
-            "[A-Z]" "uppercase letter")))
+  (str "Has to contain at least one "
+       (case (str/replace (str re) #"/" "")
+         "\\d" "number"
+         "[a-z]" "lowercase letter"
+         "[A-Z]" "uppercase letter")
+       "."))
 
 (phrase-first {} ::password "a")
 ;;=> "Length has to be between 8 and 256 but was 1."
@@ -234,16 +219,14 @@ After that, you can paste the following into the Planck REPL:
 
 ```clojure
 (require '[clojure.spec.alpha :as s])
-(require '[phrase.alpha :refer [phrase-first] :refer-macros [defphraser]])
-(require '[goog.string :as gstr])
-(require '[goog.string.format])
+(require '[phrase.alpha :refer [defphraser phrase-first]])
 
 (s/def ::password
   #(<= 8 (count %)))
   
 (defphraser #(<= min-length (count %))
   [_ _ min-length]
-  (gstr/format "Please use at least %s chars." min-length))
+  (str "Please use at least " min-length " chars."))
   
 (phrase-first {} ::password "1234")
 ```
@@ -251,8 +234,6 @@ After that, you can paste the following into the Planck REPL:
 The output should be:
 
 ```clojure
-nil
-nil
 nil
 nil
 :cljs.user/password
