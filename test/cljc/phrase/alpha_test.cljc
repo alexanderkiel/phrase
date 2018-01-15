@@ -7,10 +7,12 @@
         :cljs
         [[cljs.spec.alpha :as s]
          [cljs.test :refer-macros [deftest are is testing]]
-         [goog.string :refer [format]]
+         [goog.string :as gstr]
          [goog.string.format]
          [phrase.alpha :refer [phrase-first remove-default!] :refer-macros [defphraser]]])
          [clojure.string :as str]))
+
+#?(:cljs (def format gstr/format))
 
 (s/def ::age
   int?)

@@ -5,7 +5,9 @@
         [[clojure.core.specs.alpha]
          [clojure.spec.alpha :as s]]
         :cljs
-        [[cljs.spec.alpha :as s]])
+        [[cljs.analyzer.api]
+         [cljs.spec.alpha :as s]
+         [clojure.string :as str]])
          [clojure.walk :as walk]))
 
 (defn- normalize-pred
@@ -116,12 +118,22 @@
    (defn- resolve' [env sym]
      (if (:ns env)
        (@analyzer-resolve env sym)
-       (resolve env sym))))
+       (resolve env sym)))
+   :cljs
+   (defn- resolve' [env sym]
+     (cljs.analyzer.api/resolve env sym)))
 
 (defn- res [env form]
   (cond
     (keyword? form) form
-    (symbol? form) #?(:clj (or (->> form (resolve' env) ->sym) form) :cljs form)
+    (symbol? form) #?(:clj (or (->> form (resolve' env) ->sym) form)
+                      :cljs (let [resolved (or (->> form (resolve' env) ->sym) form)
+                                  ns-name (namespace resolved)]
+                              (symbol
+                                (if (and ns-name (str/ends-with? ns-name "$macros"))
+                                  (subs ns-name 0 (- (count ns-name) 7))
+                                  ns-name)
+                                (name resolved))))
     (sequential? form) (walk/postwalk #(if (symbol? %) (res env %) %) (unfn form))
     :else form))
 

@@ -1,4 +1,4 @@
-(ns phrase.runner
+(ns phrase.doo-runner
   (:require
     [doo.runner :refer-macros [doo-tests]]
     [phrase.alpha-test]))
