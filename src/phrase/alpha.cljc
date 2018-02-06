@@ -125,18 +125,22 @@
    (defn- resolve' [env sym]
      (cljs.analyzer.api/resolve env sym)))
 
-(defn- res [env form]
+(defn- res [env form bindings]
   (cond
     (keyword? form) form
-    (symbol? form) #?(:clj  (or (->> form (resolve' env) ->sym) form)
-                      :cljs (let [resolved (or (->> form (resolve' env) ->sym) form)
-                                  ns-name (namespace resolved)]
-                              (symbol
-                                (if (and ns-name (str/ends-with? ns-name "$macros"))
-                                  (subs ns-name 0 (- (count ns-name) 7))
-                                  ns-name)
-                                (name resolved))))
-    (sequential? form) (walk/postwalk #(if (symbol? %) (res env %) %) (unfn form))
+    (symbol? form)
+    (if (some #{form} bindings)
+      form
+      #?(:clj  (or (->> form (resolve' env) ->sym) form)
+         :cljs (let [resolved (or (->> form (resolve' env) ->sym) form)
+                     ns-name (namespace resolved)]
+                 (symbol
+                   (if (and ns-name (str/ends-with? ns-name "$macros"))
+                     (subs ns-name 0 (- (count ns-name) 7))
+                     ns-name)
+                   (name resolved)))))
+    (sequential? form)
+    (walk/postwalk #(if (symbol? %) (res env % bindings) %) (unfn form))
     :else form))
 
 (defn- replace-syms [pred bindings]
@@ -183,7 +187,7 @@
       `(defmethod phrase* []
          [~context-binding-form ~problem-binding-form]
          ~@body)
-      (let [{:keys [pred mappings]} (replace-syms (res &env pred)
+      (let [{:keys [pred mappings]} (replace-syms (res &env pred capture-binding-forms)
                                                   capture-binding-forms)
             {:keys [via]} specifiers
             dispatch-val (cond-> [pred] (seq via) (conj via))

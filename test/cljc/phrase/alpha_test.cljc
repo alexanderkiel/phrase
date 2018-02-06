@@ -7,7 +7,7 @@
     [clojure.spec.alpha :as s]
     [clojure.string :as str]
     [clojure.test :refer [deftest are is testing]]
-    [phrase.alpha :refer [defphraser phrase-first remove-default!]]))
+    [phrase.alpha :as phrase :refer [defphraser phrase-first]]))
 
 #?(:cljs (def format gstr/format))
 
@@ -58,7 +58,7 @@
       [_ _]
       "Unknown problem.")
     (is (= "Unknown problem." (phrase-first {} string? 1)))
-    (remove-default!)))
+    (phrase/remove-default!)))
 
 (s/def ::year
   pos-int?)
@@ -175,3 +175,16 @@
 
   (testing "valid"
     (is (s/valid? ::complex-password "aaaaaaA1"))))
+
+(s/def ::port
+  nat-int?)
+
+(s/def ::map-with-port
+  (s/keys :req-un [::port]))
+
+(defphraser #(contains? % key)
+  [_ _ key]
+  (str "Missing " (name key) "."))
+
+(deftest shadow-capture-syms-test
+  (is (= "Missing port." (phrase-first {} ::map-with-port {}))))
