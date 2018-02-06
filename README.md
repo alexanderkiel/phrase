@@ -241,6 +241,11 @@ nil
 "Please use at least 8 chars."
 ```
 
+## Java 9
+
+Phrase currently can't be build in ClojureScript under Java 9. The problem will
+be fixed with the next version of ClojureScript itself. See [Issue #10][6].
+
 ## License
 
 Copyright © 2017 Alexander Kiel
@@ -253,3 +258,4 @@ your option) any later version.
 [3]: <https://github.com/bhb/expound>
 [4]: <https://github.com/weavejester/hiccup>
 [5]: <http://planck-repl.org>
+[6]: <https://github.com/alexanderkiel/phrase/issues/10>

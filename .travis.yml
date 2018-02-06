@@ -1,8 +1,9 @@
 dist: trusty
 language: clojure
 jdk:
+  - openjdk8
   - oraclejdk8
-lein: 2.6.1
+lein: 2.8.1
 before_install:
 - sudo add-apt-repository -y ppa:mfikes/planck
 - sudo apt-get update -qq
