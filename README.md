@@ -6,7 +6,7 @@
 
 Clojure(Script) library for phrasing [spec][2] problems. Phrasing refers to converting to human readable messages.
 
-This library can be used in various scenarios but it's primary focus is on form validation. I talked about [Form Validation with Clojure Spec][1] in Feb 2017 and Phrase is the library based on this talk.
+This library can be used in various scenarios but its primary focus is on form validation. I talked about [Form Validation with Clojure Spec][1] in Feb 2017 and Phrase is the library based on this talk.
 
 The main idea of this library is to dispatch on spec problems and let you generate human readable messages for individual and whole classes of problems. Phrase doesn't try to generically generate messages for all problems like [Expound][3] does. The target audience for generated messages are end-users of an application not developers.
 
@@ -73,7 +73,7 @@ returns the desired message:
 
 ### The defphraser macro
 
-In it's minimal form, the defphraser macro takes a predicate and an argument vector of two arguments, a context and the problem:
+In its minimal form, the defphraser macro takes a predicate and an argument vector of two arguments, a context and the problem:
 
 ```clojure
 (defphraser int?
