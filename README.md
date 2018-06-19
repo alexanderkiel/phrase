@@ -197,6 +197,10 @@ The main function to phrase problems is `phrase`. It takes the problem directly.
 
 Phrase doesn't assume anything about messages. Messages can be strings or other things like [hiccup][4]-style data structures which can be converted into HTML later. Everything is supported. Just return it from the `defphraser` macro. Phrase does nothing with it.
 
+## API Docs
+
+You can view the API Docs at [cljdoc][7] for v0.3-alpha3.
+
 ## Related Work
 
 * [Expound][3] - aims to generate more readable messages as `s/explain`. The audience are developers not end-users.
@@ -254,3 +258,4 @@ your option) any later version.
 [4]: <https://github.com/weavejester/hiccup>
 [5]: <http://planck-repl.org>
 [6]: <https://github.com/alexanderkiel/phrase/issues/10>
+[7]: <https://cljdoc.xyz/d/phrase/phrase/0.3-alpha3/api/phrase.alpha>
