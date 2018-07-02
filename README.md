@@ -144,6 +144,8 @@ It's certainly useful to have a default phraser which is used whenever no matchi
   "Invalid value!")
 ```
 
+You can remove the default phraser by calling `(remove-default!)`.
+
 ### More Complex Example
 
 If you like to validate more than one thing, for example correct length and various regexes, I suggest that you build a spec using `s/and` as opposed to building a big, complex predicate which would be difficult to match.
