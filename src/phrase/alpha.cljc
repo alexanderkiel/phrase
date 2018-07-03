@@ -29,12 +29,29 @@
        pred)
      ::mappings @mappings}))
 
-(defn- dispatch [_ {:keys [::normalized-pred ::via]}]
+(defn dispatch [_ {:keys [::normalized-pred ::via]}]
   (cond-> []
     normalized-pred (conj normalized-pred)
     (seq via) (conj via)))
 
-(defmulti phrase*
+(defmacro defdictionary
+  "Define a dictionary of phrasers"
+  {:arglists '([name & [doc-string?]])}
+  [name & opts]
+  `(when (defmulti ~name
+           ~@(take 1 opts)
+           {:arglists '([context problem])}
+           dispatch)
+     (defmethod ~name :default
+       [context# problem#]
+       (cond
+         (seq (::via problem#))
+         (~name context# (update problem# ::via rest))
+         (::normalized-pred problem#)
+         (~name context# (dissoc problem# ::normalized-pred))))
+     ~name))
+
+(defdictionary phrase*
   "Phrases the given problem for human consumption.
 
   Dispatches on normalized pred and optional via of problem.
@@ -42,19 +59,7 @@
   Dispatches in this order:
 
   * [normalized-pred via]
-  * [normalized-pred]"
-  {:arglists '([context problem])}
-  dispatch)
-
-;; Realizes the dispatch hierarchy by removing information and calling
-;; phrase again.
-(defmethod phrase* :default
-  [context problem]
-  (cond
-    (seq (::via problem))
-    (phrase* context (update problem ::via rest))
-    (::normalized-pred problem)
-    (phrase* context (dissoc problem ::normalized-pred))))
+  * [normalized-pred]")
 
 (defn- phrase-problem [{:keys [pred via] :as problem}]
   (merge problem (normalize-pred pred) {::via via}))
@@ -65,19 +70,23 @@
   Returns the phrasers return value or nil if none was found and no default
   phraser is defined. Dispatches based on pred and via of the problem. See
   phraser macro for details."
-  [context problem]
-  (phrase* context (phrase-problem problem)))
+  ([context problem]
+   (phrase phrase* context problem))
+  ([dictionary context problem]
+   (dictionary context (phrase-problem problem))))
 
 (defn phrase-first
   "Given a spec and a value x, phrases the first problem using context if any.
 
   Returns nil if x is valid or no phraser was found. See phrase for details.
   Use phrase directly if you want to phrase more than one problem."
-  [context spec x]
-  (some->> (s/explain-data spec x)
-           ::s/problems
-           first
-           (phrase context)))
+  ([context spec x]
+   (phrase-first phrase* context spec x))
+  ([dictionary context spec x]
+   (some->> (s/explain-data spec x)
+            ::s/problems
+            first
+            (phrase dictionary context))))
 
 (defn- unfn [expr]
   (if (and (seq? expr)
@@ -168,7 +177,8 @@
                                           :cljs simple-symbol?)))))
 
 (s/fdef defphraser
-  :args (s/cat :pred any?
+  :args (s/cat :dictionary any?
+               :pred any?
                :specifiers (s/? map?)
                :args ::defphraser-arg-list
                :body (s/* any?)))
@@ -176,15 +186,15 @@
 (defmacro defphraser
   "Defines a phraser. Takes a predicate with possible capture symbols which have
   to be also defined in the argument vector."
-  {:arglists '([pred specifiers? [context-binding-form problem-binding-form
-                                  & capture-binding-forms] & body])}
-  [pred & more]
+  {:arglists '([dictionary pred specifiers? [context-binding-form problem-binding-form
+                                             & capture-binding-forms] & body])}
+  [dictionary pred & more]
   (let [specifiers (when (map? (first more)) (first more))
         [[context-binding-form problem-binding-form & capture-binding-forms]
          & body]
         (if specifiers (rest more) more)]
     (if (= :default pred)
-      `(defmethod phrase* []
+      `(defmethod ~dictionary []
          [~context-binding-form ~problem-binding-form]
          ~@body)
       (let [{:keys [pred mappings]} (replace-syms (res &env pred capture-binding-forms)
@@ -197,11 +207,13 @@
                                                    ::mappings ::via)]
               (not-empty mappings)
               (conj {mappings ::mappings} problem))]
-        `(defmethod phrase* '~dispatch-val [~context-binding-form ~problem]
+        `(defmethod ~dictionary '~dispatch-val [~context-binding-form ~problem]
            (let ~binding-forms
              ~@body))))))
 
 (defn remove-default!
   "Removes the default phraser."
-  []
-  (remove-method phrase* []))
+  ([]
+   (remove-default! phrase*))
+  ([dictionary]
+   (remove-method dictionary [])))
