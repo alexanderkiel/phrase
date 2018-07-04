@@ -1,4 +1,4 @@
-# Examples
+# Phrase Examples
 The following examples assume that you have required `clojure.spec` and `phrase` in a REPL session like so:
 ```Clojure
 (require '[clojure.spec.alpha :as s])
@@ -9,8 +9,7 @@ The following examples assume that you have required `clojure.spec` and `phrase`
 This example demonstrates how to phrase the problem of a required spec key that is missing:
 ```Clojure
 (s/def ::id string?)
-(s/def ::required-params
-  (s/keys :req [::id]))
+(s/def ::required-params (s/keys :req [::id]))
 
 (p/defphraser #(contains? % key)
   [_ _ key]
@@ -19,8 +18,8 @@ This example demonstrates how to phrase the problem of a required spec key that 
 (p/phrase-first {} ::required-params {})
 ;;=> "Missing id."
 
-;; NOTE This phraser depends on an internal `clojure.spec` implementation detail
-;;  (the fact that they use `contains?` for verifying key membership) and it is
+;; Note: This phraser depends on an internal `clojure.spec` implementation detail
+;;  (the fact that spec uses `contains?` for verifying key membership) and it is
 ;;  possible that this detail could change in the future.
 ```
 
