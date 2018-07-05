@@ -266,4 +266,4 @@ your option) any later version.
 [5]: <http://planck-repl.org>
 [6]: <https://github.com/alexanderkiel/phrase/issues/10>
 [7]: <https://cljdoc.xyz/d/phrase/phrase/0.3-alpha4/api/phrase.alpha>
-[8]: <https://cljdoc.xyz/d/phrase/phrase/0.3-alpha4/doc/readme>
+[8]: <https://cljdoc.xyz/d/phrase/phrase/0.3-alpha4/doc/examples>
