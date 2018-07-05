@@ -1,2 +1,3 @@
 {:cljdoc.doc/tree
- [["Examples" {:file "doc/examples.md"}]]}
+ [["Readme" {:file "README.md"}]
+  ["Examples" {:file "doc/examples.md"}]]}
