@@ -16,7 +16,7 @@ The main idea of this library is to dispatch on spec problems and let you genera
 To install, just add the following to your project dependencies:
 
 ```clojure
-[phrase "0.3-alpha3"]
+[phrase "0.3-alpha4"]
 ```
 
 ## Usage
@@ -206,7 +206,7 @@ Phrase doesn't assume anything about messages. Messages can be strings or other 
 
 ## API Docs
 
-You can view the API Docs at [cljdoc][7] for v0.3-alpha3.
+You can view the API Docs at [cljdoc][7] for v0.3-alpha4.
 
 ## Related Work
 
@@ -217,13 +217,13 @@ You can view the API Docs at [cljdoc][7] for v0.3-alpha3.
 First install [Planck][5] if you haven't already. Planck can use libraries which are already downloaded into your local Maven repository. A quick way to download the Phrase Jar is to use boot:
 
 ```sh
-boot -d phrase:0.3-alpha2
+boot -d phrase:0.3-alpha4
 ```
 
 After that, start Planck with Phrase as dependency:
 
 ```sh
-planck -D phrase:0.3-alpha2
+planck -D phrase:0.3-alpha4
 ```
 
 After that, you can paste the following into the Planck REPL:
@@ -265,5 +265,5 @@ your option) any later version.
 [4]: <https://github.com/weavejester/hiccup>
 [5]: <http://planck-repl.org>
 [6]: <https://github.com/alexanderkiel/phrase/issues/10>
-[7]: <https://cljdoc.xyz/d/phrase/phrase/0.3-alpha3/api/phrase.alpha>
-[8]: <https://cljdoc.xyz/d/phrase/phrase/0.3-alpha3/doc/readme>
+[7]: <https://cljdoc.xyz/d/phrase/phrase/0.3-alpha4/api/phrase.alpha>
+[8]: <https://cljdoc.xyz/d/phrase/phrase/0.3-alpha4/doc/readme>
