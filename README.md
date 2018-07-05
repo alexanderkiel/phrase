@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/alexanderkiel/phrase.svg?branch=master)](https://travis-ci.org/alexanderkiel/phrase)
 [![Dependencies Status](https://versions.deps.co/alexanderkiel/phrase/status.svg)](https://versions.deps.co/alexanderkiel/phrase)
 [![Downloads](https://versions.deps.co/alexanderkiel/phrase/downloads.svg)](https://versions.deps.co/alexanderkiel/phrase)
-[![](https://cljdoc.xyz/badge/phrase)](https://cljdoc.xyz/d/phrase/phrase/CURRENT)
+[![cljdoc](https://cljdoc.xyz/badge/phrase)](https://cljdoc.xyz/d/phrase/phrase/CURRENT)
 
 Clojure(Script) library for phrasing [spec][2] problems. Phrasing refers to converting to human readable messages.
 
