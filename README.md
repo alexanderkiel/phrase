@@ -192,6 +192,10 @@ In this example, I require a password to have the right length and contain at le
 ;;=> true
 ```
 
+### Further Examples
+
+You can find further examples [here][8].
+
 ### Phrasing Problems
 
 The main function to phrase problems is `phrase`. It takes the problem directly. There is a helper function called `phrase-first` which does the whole thing. It calls `s/explain-data` on the value using the supplied spec and phrases the first problem, if there is any. However, you have to use `phrase` directly if you like to phrase more than one problem. The library doesn't contain a `phrase-all` function because it doesn't know how to concatenate messages. 
@@ -262,3 +266,4 @@ your option) any later version.
 [5]: <http://planck-repl.org>
 [6]: <https://github.com/alexanderkiel/phrase/issues/10>
 [7]: <https://cljdoc.xyz/d/phrase/phrase/0.3-alpha3/api/phrase.alpha>
+[8]: <https://cljdoc.xyz/d/phrase/phrase/0.3-alpha3/doc/readme>
