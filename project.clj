@@ -8,13 +8,13 @@
   :pedantic? :abort
 
   :plugins [[lein-cljsbuild "1.1.7"]
-            [lein-doo "0.1.8"]
-            [lein-tach "0.4.0"]]
+            [lein-doo "0.1.10"]
+            [lein-tach "1.0.0"]]
 
   :profiles
   {:dev
    {:dependencies [[org.clojure/clojure "1.9.0"]
-                   [org.clojure/clojurescript "1.10.238"]]}}
+                   [org.clojure/clojurescript "1.10.339"]]}}
 
   :source-paths ["src"]
   :test-paths ["test/cljc"]
