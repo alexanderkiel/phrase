@@ -63,7 +63,7 @@
   "Takes a context and a clojure.spec problem and dispatches to a phraser.
 
   Returns the phrasers return value or nil if none was found and no default
-  phraser is defined. Dispatches based on pred and via of the problem. See
+  phraser is defined. Dispatches based on :pred and :via of the problem. See
   phraser macro for details."
   [context problem]
   (phrase* context (phrase-problem problem)))
@@ -71,8 +71,9 @@
 (defn phrase-first
   "Given a spec and a value x, phrases the first problem using context if any.
 
-  Returns nil if x is valid or no phraser was found. See phrase for details.
-  Use phrase directly if you want to phrase more than one problem."
+  Returns nil if x is valid or no phraser was found and no default phraser is
+  defined. See phrase for details. Use phrase directly if you want to phrase
+  more than one problem."
   [context spec x]
   (some->> (s/explain-data spec x)
            ::s/problems
@@ -174,8 +175,13 @@
                :body (s/* any?)))
 
 (defmacro defphraser
-  "Defines a phraser. Takes a predicate with possible capture symbols which have
-  to be also defined in the argument vector."
+  "Defines a phraser.
+
+  Takes a predicate with possible capture symbols which have to be also defined
+  in the argument vector.
+
+  Pred can be :default in order to define the default phraser which is used if
+  no other phraser matches."
   {:arglists '([pred specifiers? [context-binding-form problem-binding-form
                                   & capture-binding-forms] & body])}
   [pred & more]
