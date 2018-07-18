@@ -29,7 +29,7 @@
        pred)
      ::mappings @mappings}))
 
-(defn- dispatch [_ {:keys [::normalized-pred ::via]}]
+(defn- dispatch [_ {::keys [normalized-pred via]}]
   (cond-> []
     normalized-pred (conj normalized-pred)
     (seq via) (conj via)))
