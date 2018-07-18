@@ -188,3 +188,9 @@
 
 (deftest shadow-capture-syms-test
   (is (= "Missing port." (phrase-first {} ::map-with-port {}))))
+
+(s/def ::coll-of-ints
+  (s/coll-of int?))
+
+(deftest coll-of-ints-test
+  (is (= "Please enter an integer." (phrase/phrase-first {} ::coll-of-ints [:a]))))
