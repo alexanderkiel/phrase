@@ -11,6 +11,9 @@
             [lein-doo "0.1.10" :exclusions [org.clojure/clojure]]
             [lein-tach "1.0.0"]]
 
+  :dependencies
+  [[org.clojure/spec.alpha "0.2.168"]]
+
   :profiles
   {:dev
    {:dependencies [[org.clojure/clojure "1.9.0"]
