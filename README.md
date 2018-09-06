@@ -147,6 +147,102 @@ It's certainly useful to have a default phraser which is used whenever no matchi
 
 You can remove the default phraser by calling `(remove-default!)`.
 
+#### Default Phraser for a Spec
+
+It is possible to combine `:default` and `:via` to produce a default phraser for a spec. This can be used to avoid having to deal with every possible failure case. It also works as a fallback that catches cases that were missed (e.g. after spec change) or maybe intentionally ignored as they are hard to phrase.
+
+For example spec
+
+```clojure
+(s/def ::vector-with-sum-8
+  (s/and vector?
+         #(every? number? %)
+         #(= 8 (reduce + 0 %))))
+```
+
+can be covered using a single default phraser
+
+```clojure
+(defphraser :default
+  {:via [::vector-with-sum-8]}
+  [_ _]
+  "This should be a vector of numbers with sum 8.")
+```
+
+that ensures that `"This should be a vector of numbers with sum 8."` is returned on any error.
+
+```clojure
+(phrase-first {} ::vector-with-sum-8 {1 2 "3" "4"})
+;;=> "This should be a vector of numbers with sum 8."
+
+(phrase-first {} ::vector-with-sum-8 [1 2 "3" 4])
+;;=> "This should be a vector of numbers with sum 8."
+
+(phrase-first {} ::vector-with-sum-8 [1 2 3 4])
+;;=> "This should be a vector of numbers with sum 8."
+
+```
+
+### Phraser Priority Order
+
+A single "best match" phraser is used to produce a phrase for any single spec problem. This "best match" phraser is currently found based on priority
+
+1. `:pred` + `:via` phraser
+1. `:default` + `:via` phraser
+1. `:pred` phraser
+1. `:default` phraser
+
+and `:via` length. A phraser with `:via` matching a longer suffix of problem's `:via` takes precedence over a phraser with a shorter match or no `:via`.
+
+For example for spec
+
+```clojure
+(s/def ::vector-with-sum-8
+  (s/and vector?
+         #(every? number? %)
+         #(= 8 (reduce + 0 %))))
+```
+
+phraser
+
+```
+(defphraser :default
+  {:via [::vector-with-sum-8]}
+  [_ _]
+  "This should be a vector of numbers with sum 8.")
+```
+
+takes precedence over
+
+```clojure
+(defphraser #(every? number? %)
+  [_ _]
+  "Every item should be a number.")
+```
+
+like this.
+
+```clojure
+(phrase-first {} ::vector-with-sum-8 [1 2 "3" 4])
+;;=> "This should be a vector of numbers with sum 8."
+```
+
+However, phraser
+
+```clojure
+(defphraser #(every? number? %)
+  {:via [::vector-with-sum-8]}
+  [_ _]
+  "This should be a vector of numbers.")
+```
+
+has even higher priority and changes the result to this.
+
+```clojure
+(phrase-first {} ::vector-with-sum-8 [1 2 "3" 4])
+;;=> "This should be a vector of numbers."
+```
+
 ### More Complex Example
 
 If you like to validate more than one thing, for example correct length and various regexes, I suggest that you build a spec using `s/and` as opposed to building a big, complex predicate which would be difficult to match.
