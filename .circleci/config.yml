@@ -1,0 +1,9 @@
+version: 2
+jobs:
+  build:
+    docker:
+    - image: clojure:openjdk-8-lein-2.8.1
+
+    steps:
+    - checkout
+    - run: lein all-tests
