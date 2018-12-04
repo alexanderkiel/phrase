@@ -4,6 +4,7 @@ jdk:
   - openjdk8
   - oraclejdk8
   - oraclejdk9
+  - oraclejdk11
 lein: 2.8.1
 before_install:
   - sudo add-apt-repository -y ppa:mfikes/planck
