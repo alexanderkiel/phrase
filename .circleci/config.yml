@@ -1,9 +1,29 @@
 version: 2
 jobs:
-  build:
+  test-openjdk-8:
     docker:
-    - image: clojure:openjdk-8-lein-2.8.1
+    - image: circleci/clojure:openjdk-8-lein-2.8.1-browsers-legacy
 
     steps:
     - checkout
-    - run: lein all-tests
+    - run: lein deps
+    - run: lein test
+    - run: lein cljs-nashorn-tests
+    - run: lein cljs-phantom-tests
+
+  test-openjdk-11:
+    docker:
+    - image: circleci/clojure:openjdk-11-lein-2.8.1-browsers-legacy
+
+    steps:
+    - checkout
+    - run: lein deps
+    - run: lein test
+    - run: lein cljs-phantom-tests
+
+workflows:
+  version: 2
+  test:
+    jobs:
+    - test-openjdk-8
+    - test-openjdk-11
