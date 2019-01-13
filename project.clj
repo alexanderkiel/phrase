@@ -12,10 +12,14 @@
             [lein-tach "1.0.0"]]
 
   :dependencies
-  [[org.clojure/spec.alpha "0.2.168"]]
+  [[org.clojure/spec.alpha "0.2.176"]]
 
   :profiles
   {:dev
+   {:dependencies [[org.clojure/clojure "1.10.0"]
+                   [org.clojure/clojurescript "1.10.439"]
+                   [com.google.guava/guava "25.1-jre"]]}
+   :clj-1.9
    {:dependencies [[org.clojure/clojure "1.9.0"]
                    [org.clojure/clojurescript "1.10.339"]]}}
 
