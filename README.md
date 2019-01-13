@@ -1,7 +1,7 @@
 # Phrase
 
 [![Build Status](https://travis-ci.org/alexanderkiel/phrase.svg?branch=master)](https://travis-ci.org/alexanderkiel/phrase)
-[![CircleCI](https://circleci.com/gh/alexanderkiel/phrase.svg?style=svg)](https://circleci.com/gh/alexanderkiel/phrase)
+[![CircleCI](https://circleci.com/gh/alexanderkiel/phrase.svg?style=shield)](https://circleci.com/gh/alexanderkiel/phrase)
 [![Dependencies Status](https://versions.deps.co/alexanderkiel/phrase/status.svg)](https://versions.deps.co/alexanderkiel/phrase)
 [![Downloads](https://versions.deps.co/alexanderkiel/phrase/downloads.svg)](https://versions.deps.co/alexanderkiel/phrase)
 [![cljdoc](https://cljdoc.xyz/badge/phrase)](https://cljdoc.xyz/d/phrase/phrase/CURRENT)
