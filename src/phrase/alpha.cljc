@@ -29,10 +29,14 @@
        pred)
      ::mappings @mappings}))
 
-(defn- dispatch [_ {::keys [normalized-pred via]}]
+(defn- dispatch*
+  [normalized-pred via]
   (cond-> []
     normalized-pred (conj normalized-pred)
-    (seq via) (conj via)))
+    (seq via) (conj ::dispatch-with-via via)))
+
+(defn- dispatch [_ {::keys [normalized-pred via]}]
+  (dispatch* normalized-pred via))
 
 (defmulti phrase*
   "Phrases the given problem for human consumption.
@@ -42,7 +46,9 @@
   Dispatches in this order:
 
   * [normalized-pred via]
-  * [normalized-pred]"
+  * [via]
+  * [normalized-pred]
+  * []"
   {:arglists '([context problem])}
   dispatch)
 
@@ -50,11 +56,32 @@
 ;; phrase again.
 (defmethod phrase* :default
   [context problem]
-  (cond
-    (seq (::via problem))
-    (phrase* context (update problem ::via rest))
-    (::normalized-pred problem)
-    (phrase* context (dissoc problem ::normalized-pred))))
+  (let [problem (if (contains? problem ::phase)
+                  problem
+                  (merge problem {::phase ::phase-pred+via
+                                  ::saved-pred (::normalized-pred problem)
+                                  ::saved-via (::via problem)}))]
+    (cond
+      ;; retry with simpler via
+      (-> problem ::via rest seq)
+      (phrase* context (update problem ::via #(-> % rest vec)))
+      ;; pred+via -> via
+      (= ::phase-pred+via (::phase problem))
+      (phrase* context (-> problem
+                           (assoc ::phase ::phase-via)
+                           (dissoc ::normalized-pred)
+                           (assoc ::via (::saved-via problem))))
+      ;; via -> pred
+      (= ::phase-via (::phase problem))
+      (phrase* context (-> problem
+                           (assoc ::phase ::phase-pred)
+                           (assoc ::normalized-pred (::saved-pred problem))
+                           (assoc ::via [])))
+      ;; pred -> default
+      (= ::phase-pred (::phase problem))
+      (phrase* context (-> problem
+                           (assoc ::phase ::phase-default)
+                           (dissoc ::normalized-pred))))))
 
 (defn- phrase-problem [{:keys [pred via] :as problem}]
   (merge problem (normalize-pred pred) {::via via}))
@@ -188,15 +215,19 @@
   (let [specifiers (when (map? (first more)) (first more))
         [[context-binding-form problem-binding-form & capture-binding-forms]
          & body]
-        (if specifiers (rest more) more)]
+        (if specifiers (rest more) more)
+        {:keys [via]} specifiers]
     (if (= :default pred)
-      `(defmethod phrase* []
-         [~context-binding-form ~problem-binding-form]
-         ~@body)
-      (let [{:keys [pred mappings]} (replace-syms (res &env pred capture-binding-forms)
-                                                  capture-binding-forms)
-            {:keys [via]} specifiers
-            dispatch-val (cond-> [pred] (seq via) (conj via))
+      (let [dispatch-val (dispatch* nil via)]
+        `(defmethod phrase* '~dispatch-val
+           [~context-binding-form ~problem-binding-form]
+           ~@body))
+      (let [{:keys [pred mappings]}
+            (if (= :default pred)
+              {:pred :default :mappings {}}
+              (replace-syms (res &env pred capture-binding-forms)
+                            capture-binding-forms))
+            dispatch-val (dispatch* pred via)
             problem (gensym "problem")
             binding-forms
             (cond-> [problem-binding-form `(dissoc ~problem ::normalized-pred

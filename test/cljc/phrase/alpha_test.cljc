@@ -88,6 +88,33 @@
     (is (= "The year has to be a positive integer."
            (phrase-first {} ::date {::year -1})))))
 
+(s/def ::vector-with-sum-8
+  (s/and vector?
+         #(every? number? %)
+         #(= 8 (reduce + 0 %))))
+
+(defphraser #(every? number? %)
+  [_ _]
+  "Every item should be a number.")
+
+(defphraser :default
+  {:via [::vector-with-sum-8]}
+  [_ _]
+  "This should be a vector of numbers with sum 8.")
+
+(deftest via-only-dispatching-test
+  (testing "Via-only dispatch is used for ::vector-with-sum-8 on outer type failure."
+    (is (= "This should be a vector of numbers with sum 8."
+           (phrase-first {} ::vector-with-sum-8 {1 2 "3" "4"}))))
+
+  (testing "Via-only dispatch is used for ::vector-with-sum-8 on inner type failure."
+    (is (= "This should be a vector of numbers with sum 8."
+           (phrase-first {} ::vector-with-sum-8 [1 2 "3" 4]))))
+
+  (testing "Via-only dispatch is used for ::vector-with-sum-8 on sum failure."
+    (is (= "This should be a vector of numbers with sum 8."
+           (phrase-first {} ::vector-with-sum-8 [1 2 3 4])))))
+
 (s/def ::identifier
   #(re-matches #"[a-z][a-z0-9]*" %))
 
